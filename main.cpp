@@ -1,13 +1,12 @@
 #include <iostream>
-#include "List.h"
+#include "Seqlist.h"
 
 using namespace std;
 using namespace DTLib;
 
 int main()
 {
-   List<int>* l = NULL;
-
+    SeqList<int>* l;
     return 0;
 }
 
