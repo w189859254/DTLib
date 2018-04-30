@@ -18,7 +18,7 @@ void Exception::init(const char *message, const char *file, int line)
 
         itoa(line, sl, 10);
 
-        m_location = static_cast<char*>(malloc(strlen(file) + strlen(sl) + 1));
+        m_location = static_cast<char*>(malloc(strlen(file) + strlen(sl) + 2));
         if(m_location != NULL)
         {
             m_location = strcpy(m_location, file);
