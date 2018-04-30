@@ -1,34 +1,17 @@
 #include <iostream>
-#include "Object.h"
+#include "SmartPointer.h"
+#include "Exception.h"
 
 using namespace std;
 using namespace DTLib;
 
-class Test : public Object
-{
-public:
-    int i;
-    int j;
-};
-
-class Child : public Test
-{
-public:
-    int k;
-};
-
-
 int main()
 {
-    Object* obj1 = new Test();
-    Object* obj2 = new Child();
+    SmartPointer<int>* sp = new SmartPointer<int>();
+    InvalidOperationException* e = new InvalidOperationException();
 
-    cout << "obj1 = " << obj1 << endl;
-    cout << "obj2 = " << obj2 << endl;
-    // ... ...
-
-    delete obj1;
-    delete obj2;
+    delete sp;
+    delete e;
 
     return 0;
 }
