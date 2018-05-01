@@ -1,5 +1,5 @@
 #include <iostream>
-#include "StaticArray.h"
+#include "DynamicArray.h"
 #include "Exception.h"
 
 using namespace std;
@@ -7,7 +7,7 @@ using namespace DTLib;
 
 int main()
 {
-    StaticArray<int, 5> s1;
+    DynamicArray<int> s1(5);
 
     for(int i=0; i<s1.length(); i++)
     {
@@ -19,16 +19,18 @@ int main()
         cout << s1[i] << endl;
     }
 
-    StaticArray<int, 5> s2;
 
+    DynamicArray<int> s2(10);
     s2 = s1;
 
+    s2.resize(3);
     for(int i=0; i<s2.length(); i++)
     {
         cout << s2[i] << endl;
     }
 
-    s2[6] = 100;
+
+    s2[4] = 100;
 
     return 0;
 }
