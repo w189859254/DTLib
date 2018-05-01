@@ -36,7 +36,6 @@ protected:
         return ret;
     }
 
-
 public:
     LinkList()
     {
@@ -130,6 +129,29 @@ public:
             e =  position(i)->next->value;
         }
 
+        return ret;
+    }
+
+    int find(const T& e) const
+    {
+        int ret = -1;
+        int i = 0;
+
+        Node* node = m_header.next;
+
+        while(node)
+        {
+            if(node->value == e)
+            {
+                ret = i;
+                break;
+            }
+            else
+            {
+                node = node->next;
+                i++;
+            }
+        }
         return ret;
     }
 

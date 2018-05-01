@@ -5,50 +5,43 @@
 using namespace std;
 using namespace DTLib;
 
-
-class Test
+class Test : public Object
 {
+    int  i;
 public:
-    Test()
+    Test(int v = 0)
     {
-        throw 0;
+        i = v;
+    }
+
+    bool operator ==(const Test& obj)
+    {
+        return (i == obj.i);
     }
 };
 
-
 int main()
 {
-    //LinkList<Test> list;
-
+#if 0
     LinkList<int> list;
 
-       for(int i=0; i<5; i++)
-       {
-           list.insert(0, i);
-           list.set(0, i*i);
-       }
+    for(int i=0; i<5; i++)
+    {
+        list.insert(0, i);
+    }
 
-       for(int i=0; i<list.length(); i++)
-       {
-           int v = 0;
+    cout << list.find(3) << endl;
+    cout << list.find(-3) << endl;
+#endif
 
-           list.get(i, v);
+    Test t1(1), t2(2), t3(3);
+    LinkList<Test> l1;
 
-           cout << v << endl;
-       }
+    l1.insert(t1);
+    l1.insert(t2);
+    l1.insert(t3);
 
-       list.remove(3);
-       for(int i=0; i<list.length(); i++)
-       {
-           cout << list.get(i) << endl;
-       }
-
-       list.clear();
-       for(int i=0; i<list.length(); i++)
-       {
-           cout << list.get(i) << endl;
-       }
-
+    cout << l1.find(t2) << endl;
 
     return 0;
 }
