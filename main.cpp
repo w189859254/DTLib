@@ -1,5 +1,5 @@
 #include <iostream>
-#include "DynamicArray.h"
+#include "LinkList.h"
 #include "Exception.h"
 
 using namespace std;
@@ -7,30 +7,34 @@ using namespace DTLib;
 
 int main()
 {
-    DynamicArray<int> s1(5);
+    LinkList<int> list;
 
-    for(int i=0; i<s1.length(); i++)
+    for(int i=0; i<5; i++)
     {
-        s1[i] = i*i;
+        list.insert(0, i);
+        list.set(0, i*i);
     }
 
-    for(int i=0; i<s1.length(); i++)
+    for(int i=0; i<list.length(); i++)
     {
-        cout << s1[i] << endl;
+        int v = 0;
+
+        list.get(i, v);
+
+        cout << v << endl;
     }
 
-
-    DynamicArray<int> s2(10);
-    s2 = s1;
-
-    s2.resize(3);
-    for(int i=0; i<s2.length(); i++)
+    list.remove(2);
+    for(int i=0; i<list.length(); i++)
     {
-        cout << s2[i] << endl;
+        cout << list.get(i) << endl;
     }
 
-
-    s2[4] = 100;
+    list.clear();
+    for(int i=0; i<list.length(); i++)
+    {
+        cout << list.get(i) << endl;
+    }
 
     return 0;
 }
