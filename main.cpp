@@ -1,5 +1,5 @@
 #include <iostream>
-#include "LinkList.h"
+#include "StaticLinkList.h"
 #include "Exception.h"
 
 using namespace std;
@@ -9,7 +9,7 @@ using namespace DTLib;
 
 int main()
 {
-    LinkList<int> list;
+    StaticLinkList<int, 5> list;
 
     for(int i=0; i<5; i++)
     {
@@ -19,6 +19,15 @@ int main()
     for(list.move(0); !list.end(); list.next())
     {
         cout << list.current() << endl;
+    }
+
+    try
+    {
+        list.insert(6);
+    }
+    catch(const Exception& e)
+    {
+        cout << e.message() << endl;
     }
 
     return 0;
