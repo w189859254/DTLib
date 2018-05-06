@@ -10,7 +10,7 @@ namespace DTLib
 void Exception::init(const char *message, const char *file, int line)
 {
     //m_message = message;  不能保证外部message的生命周期
-    m_message = strdup(message);
+    m_message = (message ? strdup(message) : NULL);
 
     if( file != NULL )
     {
