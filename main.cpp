@@ -1,32 +1,30 @@
 #include <iostream>
-#include "LinkList.h"
+#include "SmartPointer.h"
 
 using namespace std;
 using namespace DTLib;
 
+class Test : public Object
+{
+public:
+    Test()
+    {
+        cout << "Test()" << endl;
+    }
+
+    ~Test()
+    {
+        cout << "~Test()" << endl;
+    }
+
+};
+
 int main()
 {
-    LinkList<int> list;
+    SmartPointer<Test> sp = new Test();
+    SmartPointer<Test> spn;
 
-    for(int i=0; i<5; i++)
-    {
-        list.insert(i);
-    }
-
-    for(list.move(0); !list.end(); list.next())
-    {
-        if( list.current() == 3 )
-        {
-            list.remove(list.find(list.current()));
-
-            cout << list.current() << endl;
-        }
-    }
-
-    for(int i=0; i<list.length(); i++)
-    {
-        cout << list.get(i) << endl;
-    }
+    spn = sp;
 
     return 0;
 }
