@@ -4,41 +4,28 @@
 using namespace std;
 using namespace DTLib;
 
-class Test : public Object
-{
-    int m_id;
-public:
-    Test(int id = 0)
-    {
-        m_id = id;
-    }
-
-    ~Test()
-    {
-        if( m_id == 1 )
-        {
-            throw m_id;
-        }
-    }
-};
-
 int main()
 {
-    LinkList<Test> list;
-    Test t0(0), t1(1), t2(2);
+    LinkList<int> list;
 
-    try
+    for(int i=0; i<5; i++)
     {
-        list.insert(t0);
-        list.insert(t1);
-        list.insert(t2);
-
-        list.remove(1);
+        list.insert(i);
     }
-    catch(int e)
+
+    for(list.move(0); !list.end(); list.next())
     {
-        cout << e << endl;
-        cout << list.length() << endl;
+        if( list.current() == 3 )
+        {
+            list.remove(list.find(list.current()));
+
+            cout << list.current() << endl;
+        }
+    }
+
+    for(int i=0; i<list.length(); i++)
+    {
+        cout << list.get(i) << endl;
     }
 
     return 0;
