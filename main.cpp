@@ -1,22 +1,44 @@
 #include <iostream>
-#include "Exception.h"
+#include "LinkList.h"
 
 using namespace std;
 using namespace DTLib;
 
+class Test : public Object
+{
+    int m_id;
+public:
+    Test(int id = 0)
+    {
+        m_id = id;
+    }
+
+    ~Test()
+    {
+        if( m_id == 1 )
+        {
+            throw m_id;
+        }
+    }
+};
+
 int main()
 {
+    LinkList<Test> list;
+    Test t0(0), t1(1), t2(2);
+
     try
     {
-        NullPointerException npe;
+        list.insert(t0);
+        list.insert(t1);
+        list.insert(t2);
 
-        cout << "throw" << endl;
-
-        throw npe;
+        list.remove(1);
     }
-    catch(const Exception& e)
+    catch(int e)
     {
-        cout << "catch" << endl;
+        cout << e << endl;
+        cout << list.length() << endl;
     }
 
     return 0;
