@@ -1,5 +1,5 @@
 #include <iostream>
-#include "SmartPointer.h"
+#include "SharedPointer.h"
 
 using namespace std;
 using namespace DTLib;
@@ -7,7 +7,9 @@ using namespace DTLib;
 class Test : public Object
 {
 public:
-    Test()
+    int value;
+
+    Test() : value(0)
     {
         cout << "Test()" << endl;
     }
@@ -21,10 +23,21 @@ public:
 
 int main()
 {
-    SmartPointer<Test> sp = new Test();
-    SmartPointer<Test> spn;
+    SharedPointer<Test> sp0 = new Test();
+    SharedPointer<Test> sp1 = sp0;
+    SharedPointer<Test> sp2 = NULL;
 
-    spn = sp;
+    sp2 = sp1;
+
+    sp2->value = 100;
+
+    cout << sp0->value << endl;
+    cout << sp1->value << endl;
+    cout << sp2->value << endl;
+
+    sp2.clear();
+
+    cout << (sp1 == sp2) << endl;
 
     return 0;
 }

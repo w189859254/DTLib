@@ -35,6 +35,7 @@ public:
 
             delete p;
         }
+        return *this;
     }
 
     ~SmartPointer()
