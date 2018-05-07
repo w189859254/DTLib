@@ -1,43 +1,38 @@
 #include <iostream>
-#include "SharedPointer.h"
+#include "CircleList.h"
 
 using namespace std;
 using namespace DTLib;
 
-class Test : public Object
+// n: 多少人玩游戏
+// s: 从多少号开始
+// m: 几号去死
+void josephus(int n, int s, int m)
 {
-public:
-    int value;
+    CircleList<int > cl;
 
-    Test() : value(0)
+    for(int i=1; i<=n; i++)
     {
-        cout << "Test()" << endl;
+        cl.insert(i);
     }
 
-    ~Test()
-    {
-        cout << "~Test()" << endl;
-    }
+    // 下标从 0 开始，步进为 2
+    cl.move(s-1, m-1);
 
-};
+    while(cl.length() > 0)
+    {
+        cl.next();
+
+        cout << cl.current() << endl;
+
+        cl.remove(cl.find(cl.current()));
+    }
+}
+
 
 int main()
 {
-    SharedPointer<Test> sp0 = new Test();
-    SharedPointer<Test> sp1 = sp0;
-    SharedPointer<Test> sp2 = NULL;
-
-    sp2 = sp1;
-
-    sp2->value = 100;
-
-    cout << sp0->value << endl;
-    cout << sp1->value << endl;
-    cout << sp2->value << endl;
-
-    sp2.clear();
-
-    cout << (sp1 == sp2) << endl;
+    josephus(41, 1, 3);
 
     return 0;
 }
