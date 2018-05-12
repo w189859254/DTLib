@@ -7,274 +7,274 @@
 
 namespace DTLib
 {
-    template <typename T>
-    class DualLinkList : public List<T>
+template <typename T>
+class DualLinkList : public List<T>
+{
+protected:
+    struct Node : public Object
     {
-    protected:
-        struct Node : public Object
+        T value;
+        Node* next;
+        Node* pre;
+    };
+
+    /* 避免调用泛指类型T的构造函数 */
+    mutable struct : public Object {
+        char reserved[sizeof(T)];
+        Node* next;
+        Node* pre;
+    }m_header;
+
+    int m_length;
+    int m_step;     // 保存游标步进
+    Node* m_current;
+
+    Node* position(int i) const
+    {
+        Node* ret = reinterpret_cast<Node*>(&m_header);
+
+        for (int p = 0; p<i; p++)
         {
-            T value;
-            Node* next;
-            Node* pre;
-        };
+            ret = ret->next;
+        }
 
-        /* 避免调用泛指类型T的构造函数 */
-        mutable struct : public Object {
-            char reserved[sizeof(T)];
-            Node* next;
-            Node* pre;
-        }m_header;
+        return ret;
+    }
 
-        int m_length;
-        int m_step;     // 保存游标步进
-        Node* m_current;
+    virtual Node* create()
+    {
+        return new Node();
+    }
 
-        Node* position(int i) const
+    virtual void destroy(Node* pn)
+    {
+        delete pn;
+    }
+
+public:
+
+    DualLinkList()
+    {
+        m_header.next = NULL;
+        m_header.pre = NULL;
+        m_length = 0;
+        m_step = 1;
+        m_current = NULL;
+    }
+
+    bool insert(const T& e)
+    {
+        return insert(m_length, e);
+    }
+
+    bool insert(int i, const T& e)
+    {
+        bool ret = ((0 <= i) && (i <= m_length));
+
+        if (ret)
         {
-            Node* ret = reinterpret_cast<Node*>(&m_header);
+            Node* node = create();
 
-            for (int p = 0; p<i; p++)
+            if (node != NULL)
             {
-                ret = ret->next;
-            }
+                Node* current = position(i);
+                Node* next = current->next;
 
-            return ret;
-        }
+                node->value = e;
+                node->next = next;
+                current->next = node;
 
-        virtual Node* create()
-        {
-            return new Node();
-        }
-
-        virtual void destroy(Node* pn)
-        {
-            delete pn;
-        }
-
-    public:
-
-        DualLinkList()
-        {
-            m_header.next = NULL;
-            m_header.pre = NULL;
-            m_length = 0;
-            m_step = 1;
-            m_current = NULL;
-        }
-
-        bool insert(const T& e)
-        {
-            return insert(m_length, e);
-        }
-
-        bool insert(int i, const T& e)
-        {
-            bool ret = ((0 <= i) && (i <= m_length));
-
-            if (ret)
-            {
-                Node* node = create();
-
-                if (node != NULL)
+                if (current != reinterpret_cast<Node*>(&m_header))
                 {
-                    Node* current = position(i);
-                    Node* next = current->next;
-
-                    node->value = e;
-                    node->next = next;
-                    current->next = node;
-
-                    if (current != reinterpret_cast<Node*>(&m_header))
-                    {
-                        node->pre = current;
-                    }
-                    else
-                    {
-                        node->pre = NULL;
-                    }
-
-                    if (next != NULL)
-                    {
-                        next->pre = node;
-                    }
-
-                    m_length++;
+                    node->pre = current;
                 }
                 else
                 {
-                    THROW_EXCEPTION(NoEnoughMemoryException, "No memroy to insert new element ...");
+                    node->pre = NULL;
                 }
-            }
-
-            return ret;
-        }
-
-        virtual bool remove(int i)
-        {
-            bool ret = ((0 <= i) && (i <= m_length));
-
-            if (ret)
-            {
-                Node* current = position(i);
-                Node* toDel = current->next;
-                Node* next = toDel->next;
-
-                if (m_current == toDel)
-                {
-                    m_current = next;
-                }
-
-                current->next = next;
 
                 if (next != NULL)
                 {
-                    next->pre = toDel->pre;
+                    next->pre = node;
                 }
 
-                m_length--;
-
-                destroy(toDel);
-            }
-
-            return ret;
-        }
-
-        bool set(int i, const T& e)
-        {
-            bool ret = ((0 <= i) && (i <= m_length));
-
-            if (ret)
-            {
-                position(i)->next->value = e;
-            }
-
-            return ret;
-        }
-
-        virtual T get(int i) const
-        {
-            T ret;
-
-            if (get(i, ret))
-            {
-                return ret;
+                m_length++;
             }
             else
             {
-                THROW_EXCEPTION(IndexOutOfBoundsException, "Invalid parameter i to get element ...");
+                THROW_EXCEPTION(NoEnoughMemoryException, "No memroy to insert new element ...");
             }
         }
 
-        bool get(int i, T& e) const
-        {
-            bool ret = ((0 <= i) && (i <= m_length));
+        return ret;
+    }
 
-            if (ret)
+    virtual bool remove(int i)
+    {
+        bool ret = ((0 <= i) && (i <= m_length));
+
+        if (ret)
+        {
+            Node* current = position(i);
+            Node* toDel = current->next;
+            Node* next = toDel->next;
+
+            if (m_current == toDel)
             {
-                e = position(i)->next->value;
+                m_current = next;
             }
 
+            current->next = next;
+
+            if (next != NULL)
+            {
+                next->pre = toDel->pre;
+            }
+
+            m_length--;
+
+            destroy(toDel);
+        }
+
+        return ret;
+    }
+
+    bool set(int i, const T& e)
+    {
+        bool ret = ((0 <= i) && (i <= m_length));
+
+        if (ret)
+        {
+            position(i)->next->value = e;
+        }
+
+        return ret;
+    }
+
+    virtual T get(int i) const
+    {
+        T ret;
+
+        if (get(i, ret))
+        {
             return ret;
         }
-
-        int find(const T& e) const
+        else
         {
-            int ret = -1;
-            int i = 0;
+            THROW_EXCEPTION(IndexOutOfBoundsException, "Invalid parameter i to get element ...");
+        }
+    }
 
-            Node* node = m_header.next;
+    bool get(int i, T& e) const
+    {
+        bool ret = ((0 <= i) && (i <= m_length));
 
-            while (node)
+        if (ret)
+        {
+            e = position(i)->next->value;
+        }
+
+        return ret;
+    }
+
+    int find(const T& e) const
+    {
+        int ret = -1;
+        int i = 0;
+
+        Node* node = m_header.next;
+
+        while (node)
+        {
+            if (node->value == e)
             {
-                if (node->value == e)
-                {
-                    ret = i;
-                    break;
-                }
-                else
-                {
-                    node = node->next;
-                    i++;
-                }
-            }
-            return ret;
-        }
-
-        int length() const
-        {
-            return m_length;
-        }
-
-        void clear()
-        {
-            while (m_header.next)
-            {
-                remove(0);
-            }
-        }
-
-        virtual bool move(int i, int step = 1)
-        {
-            bool ret = (0 <= i) && (i < m_length) && (step > 0);
-
-            if (ret)
-            {
-                m_current = position(i)->next;
-                m_step = step;
-            }
-
-            return ret;
-        }
-
-        virtual bool end()
-        {
-            return (m_current == NULL);
-        }
-
-        virtual T current()
-        {
-            if (!end())
-            {
-                return m_current->value;
+                ret = i;
+                break;
             }
             else
             {
-                THROW_EXCEPTION(InvalidOperationException, "No value at current position ...");
-            }
-        }
-
-        virtual bool next()
-        {
-            int i = 0;
-
-            while ((i < m_step) && (!end()))
-            {
-                m_current = m_current->next;
+                node = node->next;
                 i++;
             }
-
-            return (i == m_step);   // 判断当前移动是否成功
         }
+        return ret;
+    }
 
-        virtual bool pre()
+    int length() const
+    {
+        return m_length;
+    }
+
+    void clear()
+    {
+        while (m_header.next)
         {
-            int i = 0;
-
-            while ((i < m_step) && (!end()))
-            {
-                m_current = m_current->pre;
-                i++;
-            }
-
-            return (i == m_step);   // 判断当前移动是否成功
+            remove(0);
         }
+    }
 
-        ~DualLinkList()
+    virtual bool move(int i, int step = 1)
+    {
+        bool ret = (0 <= i) && (i < m_length) && (step > 0);
+
+        if (ret)
         {
-            clear();
+            m_current = position(i)->next;
+            m_step = step;
         }
 
-    };
+        return ret;
+    }
+
+    virtual bool end()
+    {
+        return (m_current == NULL);
+    }
+
+    virtual T current()
+    {
+        if (!end())
+        {
+            return m_current->value;
+        }
+        else
+        {
+            THROW_EXCEPTION(InvalidOperationException, "No value at current position ...");
+        }
+    }
+
+    virtual bool next()
+    {
+        int i = 0;
+
+        while ((i < m_step) && (!end()))
+        {
+            m_current = m_current->next;
+            i++;
+        }
+
+        return (i == m_step);   // 判断当前移动是否成功
+    }
+
+    virtual bool pre()
+    {
+        int i = 0;
+
+        while ((i < m_step) && (!end()))
+        {
+            m_current = m_current->pre;
+            i++;
+        }
+
+        return (i == m_step);   // 判断当前移动是否成功
+    }
+
+    ~DualLinkList()
+    {
+        clear();
+    }
+
+};
 
 }
 
