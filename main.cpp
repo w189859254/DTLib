@@ -1,37 +1,33 @@
 #include <iostream>
-#include "DualCircleList.h"
+#include "StaticStack.h"
+#include "Exception.h"
 
 using namespace std;
 using namespace DTLib;
 
 int main()
 {
-    DualCircleList<int> dl;
+    StaticStack<int, 5> stack;
+
+    try
+    {
+        stack.pop();
+    }
+    catch(const Exception& e)
+    {
+        cout << e.message() << endl;
+        cout << e.location() << endl;
+    }
 
     for(int i=0; i<5; i++)
     {
-        dl.insert(0, i);
-        dl.insert(0, 5);
+        stack.push(i);
     }
 
-    dl.move(dl.length()-1);
-
-    while( dl.find(5) != -1)
+    while(stack.size() > 0)
     {
-        if(dl.current() == 5)
-        {
-            cout << dl.current() << endl;
-            dl.remove(dl.find(dl.current()));
-        }
-        else
-        {
-            dl.pre();
-        }
-    }
-
-    for(int i=0; i<dl.length(); i++)// O(n)
-    {
-        cout << dl.get(i) << endl;
+        cout << stack.top() << endl;
+        stack.pop();
     }
 
     return 0;
