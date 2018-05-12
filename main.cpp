@@ -1,34 +1,29 @@
 #include <iostream>
-#include "StaticStack.h"
+#include "LinkStack.h"
 #include "Exception.h"
 
 using namespace std;
 using namespace DTLib;
 
+class Test : public Object
+{
+public:
+    Test()
+    {
+        cout << "Test()" << endl;
+    }
+
+    ~Test()
+    {
+        cout << "~Test()" << endl;
+    }
+};
+
 int main()
 {
-    StaticStack<int, 5> stack;
+    LinkStack<Test> stack;
 
-    try
-    {
-        stack.pop();
-    }
-    catch(const Exception& e)
-    {
-        cout << e.message() << endl;
-        cout << e.location() << endl;
-    }
-
-    for(int i=0; i<5; i++)
-    {
-        stack.push(i);
-    }
-
-    while(stack.size() > 0)
-    {
-        cout << stack.top() << endl;
-        stack.pop();
-    }
+    cout << stack.size() << endl;
 
     return 0;
 }
