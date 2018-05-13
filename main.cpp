@@ -1,5 +1,5 @@
 #include <iostream>
-#include "StaticQueue.h"
+#include "LinkQueue.h"
 #include "Exception.h"
 
 using namespace std;
@@ -8,20 +8,19 @@ using namespace DTLib;
 
 int main()
 {
-    StaticQueue<int, 5> queue;
+    LinkQueue<int> lq;
 
     for(int i=0; i<5; i++)
     {
-        queue.add(i);
+        lq.add(i);
     }
 
-    while(queue.length() > 0)
+    while(lq.length() > 0)
     {
-        cout << queue.front() << endl;
+        cout << lq.front() << endl;
 
-        queue.remove();
+        lq.remove();
     }
-
 
     return 0;
 }
