@@ -2,7 +2,7 @@
 #define LINKQUEUE_H
 
 #include "Queue.h"
-#include "LinkList.h"
+#include "LinuxList.h"
 #include "Exception.h"
 
 namespace DTLib
@@ -11,24 +11,52 @@ template <typename T>
 class LinkQueue : public Queue<T>
 {
 protected:
-    LinkList<T> m_list;
+    struct Node : public Object
+    {
+        list_head head;
+        T value;
+    };
+
+    list_head m_header;
+    int m_length;
+
+
 public:
     LinkQueue()
     {
-
+        m_length = 0;
+        INIT_LIST_HEAD(&m_header);
     }
 
-    void add(const T& e)    // O(n)
+    void add(const T& e)    // O(1)
     {
-        // 从队头开始遍历
-        m_list.insert(e);
+        Node* node = new Node();
+
+        if(node != NULL)
+        {
+            node->value = e;
+
+            list_add_tail(&node->head, &m_header);// O(1)
+
+            m_length++;
+        }
+        else
+        {
+            THROW_EXCEPTION(InvalidOperationException, "No memory to add new element ...");
+        }
     }
 
     void remove()   // O(1)
     {
-        if(m_list.length() > 0)
+        if(m_length > 0)
         {
-            m_list.remove(0);
+            list_head* toDel = m_header.next;
+
+            list_del(toDel);
+
+            m_length--;
+
+            delete list_entry(toDel, Node, head);
         }
         else
         {
@@ -38,9 +66,9 @@ public:
 
     T front() const // O(1)
     {
-        if(m_list.length() > 0)
+        if(m_length > 0)
         {
-            return m_list.get(0);
+            return list_entry(m_header.next, Node, head)->value;
         }
         else
         {
@@ -50,16 +78,24 @@ public:
 
     void clear()    // O(n)
     {
-       m_list.clear();
+        while( m_length > 0 )
+        {
+            remove();
+        }
     }
 
     int length() const  // O(1)
     {
-        return m_list.length();
+        return m_length;
     }
+
+    ~LinkQueue()    // O(n)
+    {
+        clear();
+    }
+
 };
 
-
 }
-
 #endif // LINKQUEUE_H
+
