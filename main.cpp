@@ -1,29 +1,27 @@
 #include <iostream>
-#include "LinkStack.h"
+#include "StaticQueue.h"
 #include "Exception.h"
 
 using namespace std;
 using namespace DTLib;
 
-class Test : public Object
-{
-public:
-    Test()
-    {
-        cout << "Test()" << endl;
-    }
-
-    ~Test()
-    {
-        cout << "~Test()" << endl;
-    }
-};
 
 int main()
 {
-    LinkStack<Test> stack;
+    StaticQueue<int, 5> queue;
 
-    cout << stack.size() << endl;
+    for(int i=0; i<5; i++)
+    {
+        queue.add(i);
+    }
+
+    while(queue.length() > 0)
+    {
+        cout << queue.front() << endl;
+
+        queue.remove();
+    }
+
 
     return 0;
 }
