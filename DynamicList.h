@@ -1,7 +1,6 @@
 #ifndef DYNAMICLIST_H
 #define DYNAMICLIST_H
 
-
 #include "Seqlist.h"
 #include "Exception.h"
 
@@ -56,10 +55,10 @@ public:
 
                 delete[] tmp;
             }
-        }
-        else
-        {
-            THROW_EXCEPTION(NoEnoughMemoryException, "No memory to resize DynamicList objec ...");
+            else
+            {
+                THROW_EXCEPTION(NoEnoughMemoryException, "No memory to resize DynamicList objec ...");
+            }
         }
     }
 
@@ -70,25 +69,7 @@ public:
 
 };
 
-
-
-
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #endif // DYNAMICLIST_H
+
