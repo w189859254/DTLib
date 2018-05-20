@@ -166,6 +166,8 @@ String& String::operator = (const char* s)
             THROW_EXCEPTION(NoEnoughMemoryException, "No memory to assign new String value ...");
         }
     }
+
+    return *this;
 }
 String& String::operator = (char c)
 {
