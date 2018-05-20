@@ -21,6 +21,9 @@ public:
     int length() const;
     const char* str() const;
 
+    char& operator [] (int i);
+    char operator[] (int i) const;
+
     bool operator == (const String& s) const;
     bool operator == (const char* s) const;
     bool operator != (const String& s) const;

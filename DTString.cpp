@@ -53,6 +53,22 @@ const char* String::str() const
     return m_str;
 }
 
+char& String::operator [] (int i)
+{
+    if( (0 <= i) && (i < m_length) )
+    {
+        return m_str[i];
+    }
+    else
+    {
+        THROW_EXCEPTION(IndexOutOfBoundsException, "Parameter i is invalid ...");
+    }
+}
+char String::operator[] (int i) const
+{
+    return (const_cast<String&>(*this))[i];
+}
+
 bool String::operator == (const String& s) const
 {
     return (strcmp(m_str, s.m_str) == 0);
