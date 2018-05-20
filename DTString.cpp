@@ -53,6 +53,54 @@ const char* String::str() const
     return m_str;
 }
 
+
+bool String::equal(const char *l, const char *r, int len) const
+{
+    bool ret = true;
+
+    for(int i=0; i<len && ret; i++)
+    {
+        ret = ret && (l[i] == r[i]);
+    }
+
+    return ret;
+}
+bool String::startWith(const char* s) const
+{
+    bool ret = (s != NULL);
+
+    if(ret)
+    {
+        int len = strlen(s);
+
+        ret = (len < m_length) && equal(m_str, s, len);
+    }
+
+    return ret;
+}
+bool String::startWith(const String& s) const
+{
+    return (startWith(s.m_str));
+}
+bool String::endOf(const char* s) const
+{
+    bool ret = (s != NULL);
+
+    if(ret)
+    {
+        int len = strlen(s);
+        char* str = m_str + (m_length - len);
+
+        ret = (len < m_length) && equal(str, s, len);
+    }
+
+    return ret;
+}
+bool String::endOf(const String& s) const
+{
+    return (endOf(s.m_str));
+}
+
 char& String::operator [] (int i)
 {
     if( (0 <= i) && (i < m_length) )

@@ -10,10 +10,8 @@ int main()
 {
     String s = "D.T.Software";
 
-    for(int i=0; i<s.length(); i++)
-    {
-        cout << s[i] << endl;
-    }
+    cout << s.startWith("D.T") << endl;
+    cout << s.endOf("Software") <<endl;
 
     return 0;
 }

@@ -12,6 +12,7 @@ protected:
     int m_length;
 
     void init(const char* s);
+    bool equal(const char* l, const char* r, int len) const;
 public:
     String();
     String(char c);
@@ -23,6 +24,11 @@ public:
 
     char& operator [] (int i);
     char operator[] (int i) const;
+
+    bool startWith(const char* s) const;
+    bool startWith(const String& s) const;
+    bool endOf(const char* s) const;
+    bool endOf(const String& s) const;
 
     bool operator == (const String& s) const;
     bool operator == (const char* s) const;
