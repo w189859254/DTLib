@@ -101,6 +101,45 @@ bool String::endOf(const String& s) const
     return (endOf(s.m_str));
 }
 
+String& String::insert(int i, const char* s)
+{
+    if( (0 <= i) && (i <= m_length) )
+    {
+        if((s != NULL) && (s[0] != '\0'))
+        {
+            int len = strlen(s);
+            char* str = reinterpret_cast<char*>(malloc(m_length + len + 1));
+
+            if(str != NULL)
+            {
+                strncpy(str, m_str, i);
+                strncpy(str + i, s, len);
+                strncpy(str + i + len, m_str + i, m_length - i);
+
+                str[m_length + len] = '\0';
+
+                free(m_str);
+                m_str = str;
+                m_length = m_length + len;
+            }
+        }
+        else
+        {
+            THROW_EXCEPTION(NoEnoughMemoryException, "No memory to insert string value ...");
+        }
+    }
+    else
+    {
+        THROW_EXCEPTION(IndexOutOfBoundsException, "Parameter i is invalid ...");
+    }
+
+    return *this;
+}
+String& String::insert(int i, const String& s)
+{
+    return insert(i, s.m_str);
+}
+
 char& String::operator [] (int i)
 {
     if( (0 <= i) && (i < m_length) )

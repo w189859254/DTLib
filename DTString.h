@@ -30,6 +30,9 @@ public:
     bool endOf(const char* s) const;
     bool endOf(const String& s) const;
 
+    String& insert(int i, const char* s);
+    String& insert(int i, const String& s);
+
     bool operator == (const String& s) const;
     bool operator == (const char* s) const;
     bool operator != (const String& s) const;

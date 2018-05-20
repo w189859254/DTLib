@@ -8,10 +8,12 @@ using namespace DTLib;
 
 int main()
 {
-    String s = "D.T.Software";
+    String s = "";
 
-    cout << s.startWith("D.T") << endl;
-    cout << s.endOf("Software") <<endl;
+    s.insert(0, "D.T.");
+    s.insert(4, "Software");
+
+    cout << s.str() << endl;
 
     return 0;
 }
