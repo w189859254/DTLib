@@ -140,6 +140,33 @@ String& String::insert(int i, const String& s)
     return insert(i, s.m_str);
 }
 
+String& String::trim()
+{
+    int b = 0;
+    int e = m_length - 1;
+
+    while(m_str[b] == ' ') b++;
+    while(m_str[e] == ' ') e--;
+
+    if(b == 0)
+    {
+        m_str[e + 1] = '\0';
+        m_length = e+1;
+    }
+    else
+    {
+        for(int i=0, j=b; j<=e; i++, j++)
+        {
+            m_str[i] = m_str[j];
+        }
+
+        m_str[e - b + 1] = '\0';
+        m_length = e - b + 1;
+    }
+
+    return *this;
+}
+
 char& String::operator [] (int i)
 {
     if( (0 <= i) && (i < m_length) )

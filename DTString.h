@@ -32,6 +32,7 @@ public:
 
     String& insert(int i, const char* s);
     String& insert(int i, const String& s);
+    String& trim();
 
     bool operator == (const String& s) const;
     bool operator == (const char* s) const;
