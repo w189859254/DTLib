@@ -35,6 +35,8 @@ int main()
     node = t.find('H');
     t.insert('M', node);
 
+    t.clear();
+
     const char *s = "KLFGMIJ";
 
     for(int i=0; i<7; ++i)
