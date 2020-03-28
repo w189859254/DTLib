@@ -1,4 +1,4 @@
-#ifndef ARRAY_H
+﻿#ifndef ARRAY_H
 #define ARRAY_H
 
 #include "Object.h"
@@ -51,6 +51,11 @@ public:
     T operator[] (int i) const  // o(1)
     {
         return (const_cast<Array<T>&> (*this))[i];
+    }
+
+    T *array() const  // O(1)
+    {
+        return m_array;
     }
 
     virtual int length() const = 0;
