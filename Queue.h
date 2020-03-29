@@ -1,7 +1,7 @@
-#ifndef QUEUE_H
+﻿#ifndef QUEUE_H
 #define QUEUE_H
 
-#include "Object.h"s
+#include "Object.h"
 
 namespace DTLib
 {

@@ -13,6 +13,10 @@ class GTreeNode : public TreeNode<T>
 public:
     LinkList<GTreeNode<T>*> child;
 
+    GTreeNode() = default;
+    GTreeNode(const GTreeNode<T>&) = delete;
+    GTreeNode<T>& operator = (const GTreeNode<T>&) = delete;
+
     bool flag()
     {
         return m_flag;

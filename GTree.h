@@ -4,6 +4,7 @@
 #include "Tree.h"
 #include "GTreeNode.h"
 #include "Exception.h"
+#include "LinkQueue.h"
 
 namespace DTLib
 {
@@ -12,6 +13,10 @@ template <typename T>
 class GTree : public Tree<T>
 {
 public:
+    GTree() = default;
+    GTree(const GTree<T>&) = delete;
+    GTree<T>& operator = (const GTree<T>&) = delete;
+
     bool insert(TreeNode<T> *node) override
     {
         bool ret = true;
@@ -81,6 +86,8 @@ public:
         if( node != nullptr )
         {
             remove(node, ret);
+
+            m_queue.clear();
         }
         else
         {
@@ -99,6 +106,8 @@ public:
         if( node != nullptr )
         {
             remove(dynamic_cast<GTreeNode<T>*>(node), ret);
+
+            m_queue.clear();
         }
         else
         {
@@ -144,6 +153,57 @@ public:
         free(root());
 
         this->m_root = nullptr;
+
+        m_queue.clear();
+    }
+
+    bool begin()
+    {
+        bool ret = (root() != nullptr);
+
+        if( ret )
+        {
+            m_queue.clear();    // 清除上一次遍历信息
+            m_queue.add(root());
+        }
+
+        return ret;
+    }
+
+    bool end()
+    {
+        return (m_queue.length() == 0);
+    }
+
+    bool next()
+    {
+        bool ret = (m_queue.length() > 0);
+
+        if( ret )
+        {
+            GTreeNode<T> *node = m_queue.front();
+
+            m_queue.remove();
+
+            for(node->child.move(0); !node->child.end(); node->child.next())
+            {
+                m_queue.add(node->child.current());
+            }
+        }
+
+        return ret;
+    }
+
+    T current()
+    {
+        if( !end() ) // 只有在层次遍历未结束时，才有效.
+        {
+            return m_queue.front()->value;
+        }
+        else
+        {
+            THROW_EXCEPTION(InvalidOperationException, "No value at current position ...");
+        }
     }
 
     ~GTree()
@@ -152,6 +212,9 @@ public:
     }
 
 protected:
+
+    LinkQueue<GTreeNode<T>*> m_queue; // 层次遍历用
+
     GTreeNode<T> *find(GTreeNode<T>* node, const T &value) const
     {
         GTreeNode<T> *ret = nullptr;
