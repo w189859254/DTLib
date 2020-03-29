@@ -9,6 +9,13 @@
 namespace DTLib
 {
 
+enum BTNodePos
+{
+    ANY,
+    LEFT,
+    RIGHT
+};
+
 template <typename T>
 class BTree : public Tree<T>
 {
@@ -17,14 +24,68 @@ public:
 
     bool insert(TreeNode<T> *node) override
     {
+        return insert(node, ANY);
+    }
+
+    virtual bool insert(TreeNode<T> *node, BTNodePos pos)
+    {
         bool ret = true;
+
+        if( node != nullptr )
+        {
+            if( this->m_root == nullptr )
+            {
+                node->parent = nullptr;
+                this->m_root = node;
+            }
+            else
+            {
+                BTreeNode<T> *np = find(node->parent);
+
+                if( np != nullptr )
+                {
+                    ret = insert(dynamic_cast<BTreeNode<T>*>(node), np, pos);
+                }
+                else
+                {
+                    THROW_EXCEPTION(InvalidParameterException, "Invalid parent tree node ...");
+                }
+            }
+        }
+        else
+        {
+            THROW_EXCEPTION(InvalidParameterException, "Parameter can not be null ...");
+        }
 
         return ret;
     }
 
     bool insert(const T &value, TreeNode<T> *parent) override
     {
+        return insert(value, parent, ANY);
+    }
+
+    virtual bool insert(const T &value, TreeNode<T> *parent, BTNodePos pos)
+    {
         bool ret = true;
+        BTreeNode<T> *node = BTreeNode<T>::NewNode();
+
+        if( node != nullptr )
+        {
+            node->value = value;
+            node->parent = parent;
+
+            ret = insert(node, pos);
+
+            if( !ret )
+            {
+                delete node;
+            }
+        }
+        else
+        {
+            THROW_EXCEPTION(NoEnoughMemoryException, "No enough memory to create node ...");
+        }
 
         return ret;
     }
@@ -51,7 +112,7 @@ public:
 
     BTreeNode<T>* root() const override
     {
-        return nullptr;
+        return dynamic_cast<BTreeNode<T>*>(this->m_root);
     }
 
     int degree() const override
@@ -128,6 +189,51 @@ protected:
                 {
                     ret = find(node->right, obj);
                 }
+            }
+        }
+
+        return ret;
+    }
+
+    virtual bool insert(BTreeNode<T> *node, BTreeNode<T> *np, BTNodePos pos)
+    {
+        bool ret = true;
+
+        if( pos == ANY )
+        {
+            if( np->left == nullptr )
+            {
+                np->left = node;
+            }
+            else if( np->right == nullptr )
+            {
+                np->right = node;
+            }
+            else
+            {
+                ret = false;
+            }
+        }
+        else if( pos == LEFT )
+        {
+            if( np->left == nullptr )
+            {
+                np->left = node;
+            }
+            else
+            {
+                ret = false;
+            }
+        }
+        else if( pos == RIGHT )
+        {
+            if( np->right == nullptr )
+            {
+                np->right = node;
+            }
+            else
+            {
+                ret = false;
             }
         }
 
