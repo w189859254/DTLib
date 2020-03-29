@@ -74,13 +74,40 @@ public:
 
     SharedPointer<Tree<T>> remove(const T &value) override
     {
-        return nullptr;
+        GTree<T> *ret = nullptr;
+
+        GTreeNode<T> *node = find(value);
+
+        if( node != nullptr )
+        {
+            remove(node, ret);
+        }
+        else
+        {
+            THROW_EXCEPTION(InvalidParameterException, "can not find the node ...");
+        }
+
+        return ret;
     }
 
     SharedPointer<Tree<T>> remove(TreeNode<T> *node) override
     {
-        return nullptr;
+        GTree<T> *ret = nullptr;
+
+        node = find(node);
+
+        if( node != nullptr )
+        {
+            remove(dynamic_cast<GTreeNode<T>*>(node), ret);
+        }
+        else
+        {
+            THROW_EXCEPTION(InvalidParameterException, "Parameter node is invalid ...");
+        }
+
+        return ret;
     }
+
 
     GTreeNode<T>* find(const T &value) const override
     {
@@ -182,6 +209,33 @@ protected:
             {
                 delete node;
             }
+        }
+    }
+
+    void remove(GTreeNode<T> *node, GTree<T> *&ret)
+    {
+        ret = new GTree<T>();
+
+        if( ret != nullptr )
+        {
+            if( node == root() )
+            {
+                this->m_root = nullptr;
+            }
+            else
+            {
+                GTreeNode<T> *parent = dynamic_cast<GTreeNode<T>*>(node->parent);
+
+                parent->child.remove(parent->child.find(node));
+
+                node->parent = nullptr;
+            }
+
+            ret->m_root = node;
+        }
+        else
+        {
+            THROW_EXCEPTION(NoEnoughMemoryException, "No enough memory to create tree ...");
         }
     }
 };

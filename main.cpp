@@ -35,13 +35,17 @@ int main()
     node = t.find('H');
     t.insert('M', node);
 
-    t.clear();
+    //t.remove('D');
+    //t.remove(t.find('D'));
+
+    SharedPointer<Tree<char> > p = t.remove('D');
 
     const char *s = "KLFGMIJ";
 
     for(int i=0; i<7; ++i)
     {
-        TreeNode<char> *node = t.find(s[i]);
+        //TreeNode<char> *node = t.find(s[i]);
+        TreeNode<char> *node = p->find(s[i]);
 
         while( node != nullptr )
         {
