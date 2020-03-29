@@ -41,12 +41,12 @@ public:
 
     BTreeNode<T>* find(const T &value) const override
     {
-        return nullptr;
+        return find(root(), value);
     }
 
     BTreeNode<T>* find(TreeNode<T> *node) const override
     {
-        return nullptr;
+        return find(root(), dynamic_cast<BTreeNode<T>*>(node));
     }
 
     BTreeNode<T>* root() const override
@@ -78,7 +78,64 @@ public:
     {
         clear();
     }
+
+protected:
+    virtual BTreeNode<T>* find(BTreeNode<T> *node, const T &value) const
+    {
+        BTreeNode<T> *ret = nullptr;
+
+        if( node != nullptr )
+        {
+            if( node->value == value )
+            {
+                ret = node;
+            }
+            else
+            {
+                if( ret == nullptr )
+                {
+                    ret = find(node->left, value);
+                }
+
+                if( ret == nullptr )
+                {
+                    ret = find(node->right, value);
+                }
+            }
+        }
+
+        return ret;
+    }
+
+    virtual BTreeNode<T>* find(BTreeNode<T> *node, BTreeNode<T> *obj) const
+    {
+        BTreeNode<T> *ret = nullptr;
+
+        if( node == obj )
+        {
+            ret = node;
+        }
+        else
+        {
+            if( node != nullptr )
+            {
+                if( ret == nullptr )
+                {
+                    ret = find(node->left, obj);
+                }
+
+                if( ret == nullptr )
+                {
+                    ret = find(node->right, obj);
+                }
+            }
+        }
+
+        return ret;
+    }
+
 };
+
 
 }
 
