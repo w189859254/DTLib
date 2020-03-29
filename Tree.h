@@ -25,6 +25,9 @@ public:
     virtual int height() const = 0;
     virtual void clear() = 0;
 
+    Tree(const Tree<T>&) = delete;
+    Tree<T>& operator = (const Tree<T>&) = delete;
+
 protected:
     TreeNode<T> *m_root = nullptr;
 };

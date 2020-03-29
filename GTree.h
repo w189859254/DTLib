@@ -14,8 +14,6 @@ class GTree : public Tree<T>
 {
 public:
     GTree() = default;
-    GTree(const GTree<T>&) = delete;
-    GTree<T>& operator = (const GTree<T>&) = delete;
 
     bool insert(TreeNode<T> *node) override
     {

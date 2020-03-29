@@ -1,5 +1,6 @@
 ﻿#include <iostream>
 #include "GTree.h"
+#include "BTree.h"
 
 using namespace std;
 using namespace DTLib;
@@ -39,6 +40,9 @@ int main()
     {
         cout << t.current() << " ";
     }
+
+    BTree<int> bt;
+    BTreeNode<int> btn;
 
     return 0;
 }
