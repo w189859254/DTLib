@@ -31,22 +31,15 @@ int main()
     bt.insert(6, n);
     bt.insert(7, n);
 
+    cout << bt.count() << endl;
+    cout << bt.height() << endl;
+    cout << bt.degree() << endl;
+
     bt.clear();
 
-    int a[] = {8, 9, 10, 6, 7};
-
-    for (int i=0; i<5; ++i)
-    {
-        TreeNode<int> *node = bt.find(a[i]);
-
-        while (node)
-        {
-            cout << node->value << " ";
-            node = node->parent;
-        }
-
-        cout << endl;
-    }
+    cout << bt.count() << endl;
+    cout << bt.height() << endl;
+    cout << bt.degree() << endl;
 
     return 0;
 }

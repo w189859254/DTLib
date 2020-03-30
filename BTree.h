@@ -143,17 +143,17 @@ public:
 
     int degree() const override
     {
-        return 0;
+        return degree(root());
     }
 
     int count() const override
     {
-        return 0;
+        return count(root());
     }
 
     int height() const
     {
-        return 0;
+        return height(root());
     }
 
     void clear() override
@@ -316,6 +316,70 @@ protected:
         }
     }
 
+    int count(BTreeNode<T> *node) const
+    {
+        return (node != nullptr) ? (count(node->left) + count(node->right) + 1) : 0;
+    }
+
+    int height(BTreeNode<T> *node) const
+    {
+        int ret = 0;
+
+        if( node != nullptr )
+        {
+            int lh = height(node->left);
+            int rh = height(node->right);
+
+            ret = ( (lh > rh) ? lh : rh ) + 1;
+        }
+
+        return ret;
+    }
+
+    int degree(BTreeNode<T> *node) const
+    {
+        int ret = 0;
+
+        if( node != nullptr )
+        {
+            BTreeNode<T> *child[] = {node->left, node->right};
+            ret = !!node->left + !!node->left;
+
+            for(int i=0; (i<2) && (ret<2); ++i)
+            {
+                int d = degree(child[i]);
+
+                if( ret < d )
+                {
+                    ret = d;
+                }
+            }
+#if 0
+            // 二叉树度数最大为 2，若已经为 2 了，则没必要继续执行
+            if( ret < 2 )
+            {
+                int dl = degree(node->left);
+
+                if( ret < dl )
+                {
+                    ret = dl;
+                }
+            }
+
+            if( ret < 2 )
+            {
+                int dr = degree(node->right);
+
+                if( ret < dr )
+                {
+                    ret = dr;
+                }
+            }
+#endif
+        }
+
+        return ret;
+    }
 };
 
 
