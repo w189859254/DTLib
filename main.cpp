@@ -31,15 +31,12 @@ int main()
     bt.insert(6, n);
     bt.insert(7, n);
 
-    cout << bt.count() << endl;
-    cout << bt.height() << endl;
-    cout << bt.degree() << endl;
+    for (bt.begin(); !bt.end(); bt.next())
+    {
+        cout << bt.current() << " ";
+    }
 
-    bt.clear();
-
-    cout << bt.count() << endl;
-    cout << bt.height() << endl;
-    cout << bt.degree() << endl;
+    cout << endl;
 
     return 0;
 }
