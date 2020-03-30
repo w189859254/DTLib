@@ -31,16 +31,15 @@ int main()
     bt.insert(6, n);
     bt.insert(7, n);
 
-    n = bt.find(6);
-    bt.insert(11, n, LEFT);
+    bt.clear();
 
-    int a[] = {8, 9, 10, 11, 7};
+    int a[] = {8, 9, 10, 6, 7};
 
-    for(int i=0; i<5; ++i)
+    for (int i=0; i<5; ++i)
     {
         TreeNode<int> *node = bt.find(a[i]);
 
-        while( node )
+        while (node)
         {
             cout << node->value << " ";
             node = node->parent;
