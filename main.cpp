@@ -31,47 +31,23 @@ int main()
     bt.insert(6, n);
     bt.insert(7, n);
 
-    cout << "Original: " << endl;
-    for (bt.begin(); !bt.end(); bt.next())
+    SharedPointer< DynamicArray<int> > tr = bt.traversal(LevelOrder);
+
+    for(int i=0; i<tr->length(); i++)
     {
-        cout << bt.current() << " ";
+        cout << (*tr)[i] << " ";
     }
 
     cout << endl;
 
-    SharedPointer<BTree<int>> sp = bt.clone();
+    cout << endl;
 
-    cout << "Clone: " << endl;
-    for (sp->begin(); !sp->end(); sp->next())
+    BTreeNode<int>* head = bt.thread(LevelOrder);
+
+    while( head != nullptr )
     {
-        cout << sp->current() << " ";
-    }
-
-    cout << endl;
-    cout << endl;
-
-    cout << "bt == *sp : " << (bt == *sp) << endl;
-    cout << "bt != *sp : " << (bt != *sp) << endl;
-
-    cout << endl;
-
-    BTree<int> nbt;
-
-    nbt.insert(0, nullptr);
-    n = nbt.find(0);
-    nbt.insert(6, n);
-    nbt.insert(2, n);
-
-    n = nbt.find(2);
-    nbt.insert(7, n);
-    nbt.insert(8, n);
-
-    SharedPointer<BTree<int>> r = bt.add(nbt);
-
-    cout << "Add: " << endl;
-    for (r->begin(); !r->end(); r->next())
-    {
-        cout << r->current() << " ";
+        cout << head->value << " ";
+        head = head->right;
     }
 
     return 0;

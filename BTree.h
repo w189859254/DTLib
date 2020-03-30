@@ -21,7 +21,8 @@ enum BTTraversal
 {
     PreOrder,
     InOrder,
-    PostOrder
+    PostOrder,
+    LevelOrder
 };
 
 template <typename T>
@@ -236,21 +237,7 @@ public:
         DynamicArray<T> *ret = nullptr;
         LinkQueue<BTreeNode<T>*> queue;
 
-        switch(order)
-        {
-        case PreOrder:
-            PreOrderTraversal(root(), queue);
-            break;
-        case InOrder:
-            InOrderTraversal(root(), queue);
-            break;
-        case PostOrder:
-            PostOrderTraversal(root(), queue);
-            break;
-        default:
-            THROW_EXCEPTION(InvalidParameterException, "Parameter order is invalid ...");
-            break;
-        }
+        traversal(order, queue);
 
         ret = new DynamicArray<T>(queue.length());
 
@@ -307,6 +294,23 @@ public:
         {
             THROW_EXCEPTION(NoEnoughMemoryException, "No enough memory to create new tree ...");
         }
+
+        return ret;
+    }
+
+    BTreeNode<T> *thread(BTTraversal order)
+    {
+        BTreeNode<T> *ret = nullptr;
+
+        LinkQueue<BTreeNode<T>*> queue;
+
+        traversal(order, queue);
+
+        ret = connect(queue);
+
+        this->m_root = nullptr;
+
+        m_queue.clear();
 
         return ret;
     }
@@ -561,6 +565,34 @@ protected:
         }
     }
 
+    void LevelOrderTraversal(BTreeNode<T> *node, LinkQueue<BTreeNode<T>*> &queue) const
+    {
+        if( node != nullptr )
+        {
+            LinkQueue<BTreeNode<T>*> tmp;
+
+            tmp.add(node);
+
+            while( tmp.length() > 0 )
+            {
+                BTreeNode<T> *n = tmp.front();
+
+                if( n->left != nullptr )
+                {
+                    tmp.add(n->left);
+                }
+
+                if( n->right != nullptr )
+                {
+                    tmp.add(n->right);
+                }
+
+                tmp.remove();
+                queue.add(n);
+            }
+        }
+    }
+
     BTreeNode<T> *clone(BTreeNode<T> *node) const
     {
         BTreeNode<T> *ret = nullptr;
@@ -646,6 +678,53 @@ protected:
             {
                 THROW_EXCEPTION(NoEnoughMemoryException, "No enough memory to create new node ...");
             }
+        }
+
+        return ret;
+    }
+
+    void traversal(BTTraversal order, LinkQueue<BTreeNode<T>*> &queue) const
+    {
+        switch(order)
+        {
+            case PreOrder:
+                PreOrderTraversal(root(), queue);
+                break;
+            case InOrder:
+                InOrderTraversal(root(), queue);
+                break;
+            case PostOrder:
+                PostOrderTraversal(root(), queue);
+                break;
+            case LevelOrder:
+                LevelOrderTraversal(root(), queue);
+        }
+    }
+
+    BTreeNode<T> *connect(LinkQueue<BTreeNode<T>*> &queue)
+    {
+        BTreeNode<T> *ret = nullptr;
+
+        if( queue.length() > 0 )
+        {
+            ret = queue.front();
+
+            BTreeNode<T> *slider = queue.front();
+
+            queue.remove();
+
+            slider->left = nullptr;
+
+            while( queue.length() > 0 )
+            {
+                slider->right = queue.front();
+                queue.front()->left = slider;
+
+                slider = queue.front();
+                queue.remove();
+            }
+
+            slider->right = nullptr;
         }
 
         return ret;
