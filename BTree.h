@@ -269,6 +269,48 @@ public:
         return ret;
     }
 
+    SharedPointer<BTree<T>> clone() const
+    {
+        BTree<T> *ret = new BTree<T>();
+
+        if( ret != nullptr )
+        {
+            ret->m_root = clone(root());
+        }
+        else
+        {
+            THROW_EXCEPTION(NoEnoughMemoryException, "No enough memory to create new tree ...");
+        }
+
+        return ret;
+    }
+
+    bool operator == (const BTree<T> &btree) const
+    {
+        return equal(root(), btree.root());
+    }
+
+    bool operator != (const BTree<T> &btree) const
+    {
+        return !(*this == btree);
+    }
+
+    SharedPointer<BTree<T>> add(const BTree<T> &btree) const
+    {
+        BTree<T> *ret = new BTree<T>();
+
+        if( ret != nullptr )
+        {
+            ret->m_root = add(root(), btree.root());
+        }
+        else
+        {
+            THROW_EXCEPTION(NoEnoughMemoryException, "No enough memory to create new tree ...");
+        }
+
+        return ret;
+    }
+
     ~BTree()
     {
         clear();
@@ -517,6 +559,96 @@ protected:
             PostOrderTraversal(node->right, queue);
             queue.add(node);
         }
+    }
+
+    BTreeNode<T> *clone(BTreeNode<T> *node) const
+    {
+        BTreeNode<T> *ret = nullptr;
+
+        if( node != nullptr )
+        {
+            ret = BTreeNode<T>::NewNode();
+
+            if( ret != nullptr )
+            {
+                ret->value = node->value;
+                ret->left = clone(node->left);
+                ret->right = clone(node->right);
+
+                if( ret->left != nullptr )
+                {
+                    ret->left->parent = ret;
+                }
+
+                if( ret->right != nullptr )
+                {
+                    ret->right->parent = ret;
+                }
+            }
+            else
+            {
+                THROW_EXCEPTION(NoEnoughMemoryException, "No enough memory to create new node ...");
+            }
+        }
+
+        return ret;
+    }
+
+    bool equal(BTreeNode<T> *lh, BTreeNode<T> *rh) const
+    {
+        if( lh == rh ) // 是否是自己和自己比较
+        {
+            return true;
+        }
+        else if( (lh != nullptr) && (rh != nullptr) )
+        {
+            return(lh->value == rh->value) && equal(lh->left, rh->left) && equal(lh->right, rh->right);
+        }
+        else    // 一颗为空树，一颗不为空
+        {
+            return false;
+        }
+    }
+
+    BTreeNode<T> *add(BTreeNode<T> *lh, BTreeNode<T> *rh) const
+    {
+        BTreeNode<T> *ret = nullptr;
+
+        if( (lh != nullptr) && (rh == nullptr) )
+        {
+            ret = clone(lh);
+        }
+        else if( (lh == nullptr) && (rh != nullptr) )
+        {
+            ret = clone(rh);
+        }
+        else if( (lh != nullptr) && (rh != nullptr) )
+        {
+            ret = BTreeNode<T>::NewNode();
+
+            if( ret != nullptr )
+            {
+                ret->value = lh->value + rh->value;
+                ret->left = add(lh->left, rh->left);
+                ret->right = add(lh->right, rh->right);
+
+                if( ret->left != nullptr )
+                {
+                    ret->left->parent = ret;
+                }
+
+                if( ret->right != nullptr )
+                {
+                    ret->right->parent = ret;
+                }
+            }
+            else
+            {
+                THROW_EXCEPTION(NoEnoughMemoryException, "No enough memory to create new node ...");
+            }
+        }
+
+        return ret;
     }
 };
 

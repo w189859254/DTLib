@@ -31,6 +31,7 @@ int main()
     bt.insert(6, n);
     bt.insert(7, n);
 
+    cout << "Original: " << endl;
     for (bt.begin(); !bt.end(); bt.next())
     {
         cout << bt.current() << " ";
@@ -38,29 +39,40 @@ int main()
 
     cout << endl;
 
-    SharedPointer<DynamicArray<int>> sp1 = bt.traversal(PreOrder);
-    for (int i=0; i<(*sp1).length(); ++i)
+    SharedPointer<BTree<int>> sp = bt.clone();
+
+    cout << "Clone: " << endl;
+    for (sp->begin(); !sp->end(); sp->next())
     {
-        cout << (*sp1)[i] << " ";
+        cout << sp->current() << " ";
     }
 
     cout << endl;
+    cout << endl;
 
-    SharedPointer<DynamicArray<int>> sp2 = bt.traversal(InOrder);
-    for (int i=0; i<(*sp2).length(); ++i)
-    {
-        cout << (*sp2)[i] << " ";
-    }
+    cout << "bt == *sp : " << (bt == *sp) << endl;
+    cout << "bt != *sp : " << (bt != *sp) << endl;
 
     cout << endl;
 
-    SharedPointer<DynamicArray<int>> sp3 = bt.traversal(PostOrder);
-    for (int i=0; i<(*sp3).length(); ++i)
-    {
-        cout << (*sp3)[i] << " ";
-    }
+    BTree<int> nbt;
 
-    cout << endl;
+    nbt.insert(0, nullptr);
+    n = nbt.find(0);
+    nbt.insert(6, n);
+    nbt.insert(2, n);
+
+    n = nbt.find(2);
+    nbt.insert(7, n);
+    nbt.insert(8, n);
+
+    SharedPointer<BTree<int>> r = bt.add(nbt);
+
+    cout << "Add: " << endl;
+    for (r->begin(); !r->end(); r->next())
+    {
+        cout << r->current() << " ";
+    }
 
     return 0;
 }
