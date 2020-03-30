@@ -38,6 +38,30 @@ int main()
 
     cout << endl;
 
+    SharedPointer<DynamicArray<int>> sp1 = bt.traversal(PreOrder);
+    for (int i=0; i<(*sp1).length(); ++i)
+    {
+        cout << (*sp1)[i] << " ";
+    }
+
+    cout << endl;
+
+    SharedPointer<DynamicArray<int>> sp2 = bt.traversal(InOrder);
+    for (int i=0; i<(*sp2).length(); ++i)
+    {
+        cout << (*sp2)[i] << " ";
+    }
+
+    cout << endl;
+
+    SharedPointer<DynamicArray<int>> sp3 = bt.traversal(PostOrder);
+    for (int i=0; i<(*sp3).length(); ++i)
+    {
+        cout << (*sp3)[i] << " ";
+    }
+
+    cout << endl;
+
     return 0;
 }
 

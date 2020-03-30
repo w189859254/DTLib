@@ -5,6 +5,7 @@
 #include "BTreeNode.h"
 #include "Exception.h"
 #include "LinkQueue.h"
+#include "DynamicArray.h"
 
 namespace DTLib
 {
@@ -14,6 +15,13 @@ enum BTNodePos
     ANY,
     LEFT,
     RIGHT
+};
+
+enum BTTraversal
+{
+    PreOrder,
+    InOrder,
+    PostOrder
 };
 
 template <typename T>
@@ -221,6 +229,44 @@ public:
         {
             THROW_EXCEPTION(InvalidOperationException, "No value at current position ...");
         }
+    }
+
+    SharedPointer<DynamicArray<T>> traversal(BTTraversal order) const
+    {
+        DynamicArray<T> *ret = nullptr;
+        LinkQueue<BTreeNode<T>*> queue;
+
+        switch(order)
+        {
+        case PreOrder:
+            PreOrderTraversal(root(), queue);
+            break;
+        case InOrder:
+            InOrderTraversal(root(), queue);
+            break;
+        case PostOrder:
+            PostOrderTraversal(root(), queue);
+            break;
+        default:
+            THROW_EXCEPTION(InvalidParameterException, "Parameter order is invalid ...");
+            break;
+        }
+
+        ret = new DynamicArray<T>(queue.length());
+
+        if( ret != nullptr )
+        {
+            for(int i=0; i<ret->length(); ++i, queue.remove())
+            {
+                ret->set(i, queue.front()->value);
+            }
+        }
+        else
+        {
+            THROW_EXCEPTION(NoEnoughMemoryException, "No enough to create return array ...");
+        }
+
+        return ret;
     }
 
     ~BTree()
@@ -441,6 +487,36 @@ protected:
         }
 
         return ret;
+    }
+
+    void PreOrderTraversal(BTreeNode<T> *node, LinkQueue<BTreeNode<T>*> &queue) const
+    {
+        if( node != nullptr )
+        {
+            queue.add(node);
+            PreOrderTraversal(node->left, queue);
+            PreOrderTraversal(node->right, queue);
+        }
+    }
+
+    void InOrderTraversal(BTreeNode<T> *node, LinkQueue<BTreeNode<T>*> &queue) const
+    {
+        if( node != nullptr )
+        {
+            InOrderTraversal(node->left, queue);
+            queue.add(node);
+            InOrderTraversal(node->right, queue);
+        }
+    }
+
+    void PostOrderTraversal(BTreeNode<T> *node, LinkQueue<BTreeNode<T>*> &queue) const
+    {
+        if( node != nullptr )
+        {
+            PostOrderTraversal(node->left, queue);
+            PostOrderTraversal(node->right, queue);
+            queue.add(node);
+        }
     }
 };
 
