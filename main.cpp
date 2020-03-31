@@ -1,82 +1,59 @@
 ﻿#include <iostream>
-#include "ListGraph.h"
+#include "MatrixGraph.h"
 
 using namespace std;
 using namespace DTLib;
 
 int main()
 {
-    ListGraph<char, int> g(4);
+    MatrixGraph<9, char, int> g;
+    const char* VD = "ABEDCGFHI";
 
-    g.setVertex(0, 'A');
-    g.setVertex(1, 'B');
-    g.setVertex(2, 'C');
-    g.setVertex(3, 'D');
-
-    for(int i=0; i<g.vCount(); ++i)
+    for(int i=0; i<9; i++)
     {
-        cout << i << " : " << g.getVertex(i) << endl;
+        g.setVertex(0, VD[i]);
     }
-    cout << endl;
 
-    cout << "remove vertex --------" << endl;
-    g.removeVertex();
-    g.removeVertex();
+    // 权值为 0：只关系连接关系
+    // 用有向图表示无向图
+    g.setEdge(0, 1, 0);
+    g.setEdge(1, 0, 0);
 
-    for(int i=0; i<g.vCount(); ++i)
+    g.setEdge(0, 3, 0);
+    g.setEdge(3, 0, 0);
+
+    g.setEdge(0, 4, 0);
+    g.setEdge(4, 0, 0);
+
+    g.setEdge(1, 2, 0);
+    g.setEdge(2, 1, 0);
+
+    g.setEdge(1, 4, 0);
+    g.setEdge(4, 1, 0);
+
+    g.setEdge(2, 5, 0);
+    g.setEdge(5, 2, 0);
+
+    g.setEdge(3, 6, 0);
+    g.setEdge(6, 3, 0);
+
+    g.setEdge(4, 6, 0);
+    g.setEdge(6, 4, 0);
+
+    g.setEdge(6, 7, 0);
+    g.setEdge(7, 6, 0);
+
+    g.setEdge(7, 8, 0);
+    g.setEdge(8, 7, 0);
+
+    SharedPointer<Array<int>> sa = g.BFS(0);
+
+    for(int i=0; i<sa->length(); ++i)
     {
-        cout << i << " : " << g.getVertex(i) << endl;
+        cout << (*sa)[i] << " ";
     }
+
     cout << endl;
-
-    cout << "add vertex--------" << endl;
-    g.addVertex('C');
-    g.addVertex('D');
-
-    for(int i=0; i<g.vCount(); ++i)
-    {
-        cout << i << " : " << g.getVertex(i) << endl;
-    }
-    cout << endl;
-
-    cout << "set edge--------" << endl;
-    g.setEdge(0, 1, 5);
-    g.setEdge(0, 3, 6);
-    g.setEdge(1, 2, 8);
-    g.setEdge(2, 3, 2);
-    g.setEdge(3, 1, 9);
-
-    cout << "W(0, 1) : " << g.getEdge(0, 1) << endl;
-    cout << "W(0, 3) : " << g.getEdge(0, 3) << endl;
-    cout << "W(1, 2) : " << g.getEdge(1, 2) << endl;
-    cout << "W(2, 3) : " << g.getEdge(2, 3) << endl;
-    cout << "W(3, 1) : " << g.getEdge(3, 1) << endl;
-    cout << endl;
-
-    cout << "get count--------" << endl;
-    cout << "vCount : " << g.vCount() << endl;
-    cout << "eCount : " << g.eCount() << endl;
-    cout << endl;
-
-    cout << "get adjacent--------" << endl;
-    SharedPointer<Array<int>> aj = g.getAdjacent(0);
-    for(int i=0; i<aj->length(); ++i)
-    {
-        cout << (*aj)[i] << " ";
-    }
-    cout << endl;
-    cout << endl;
-
-    cout << "get degree--------" << endl;
-    cout << "ID(1) : " << g.ID(1) << endl;
-    cout << "OD(1) : " << g.OD(1) << endl;
-    cout << "TD(1) : " << g.TD(1) << endl;
-    cout << endl;
-
-    cout << "get count--------" << endl;
-    g.removeVertex();
-    cout << "vCount : " << g.vCount() << endl;
-    cout << "eCount : " << g.eCount() << endl;
 
     return 0;
 };
