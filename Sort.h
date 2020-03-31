@@ -81,13 +81,13 @@ public:
         {
             d = d / 3 +1;  // 实践证明此递减方式最高效！
 
-            for (int i=d; i<len; i+=d)
+            for(int i=d; i<len; i++)
             {
                 T e = array[i];
                 int k = i;
 
 
-                for (int j=i-d; (j>=0) && (min2max ? (e < array[j]) : (e > array[j])); j-=d)
+                for(int j=i-d; (j>=0) && (min2max ? (e < array[j]) : (e > array[j])); j-=d)
                 {
                     array[j+d] = array[j];
                     k = j;
@@ -99,7 +99,7 @@ public:
                 }
             }
 
-        }while (d > 1);
+        }while( d > 1 );
     }
 
     template <typename T>
