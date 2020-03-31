@@ -1,54 +1,54 @@
 ﻿#include <iostream>
 #include "BTreeNode.h"
-#include "BTree.h"
+#include "MatrixGraph.h"
 
 using namespace std;
 using namespace DTLib;
 
 int main()
 {
-    BTree<int> bt;
-    BTreeNode<int> *n = nullptr;
+    MatrixGraph<3, int, int> g;
 
-    bt.insert(1, nullptr);
+    g.setEdge(0, 1, 1);
+    g.setEdge(1, 0, 2);
+    g.setEdge(1, 2, 3);
 
-    n = bt.find(1);
-    bt.insert(2, n);
-    bt.insert(3, n);
+    cout << "vCount : " << g.vCount() << endl;
+    cout << "eCount : " << g.eCount() << endl;
+    cout << "ID(1) : " << g.ID(1) << endl;
+    cout << "OD(1) : " << g.OD(1) << endl;
+    cout << "TD(1) : " << g.TD(1) << endl;
 
-    n = bt.find(2);
-    bt.insert(4, n);
-    bt.insert(5, n);
+    cout << endl;
 
-    n = bt.find(4);
-    bt.insert(8, n);
-    bt.insert(9, n);
+    cout << "W<0, 1> : " << g.getEdge(0, 1) << endl;
+    cout << "W<1, 0> : " << g.getEdge(1, 0) << endl;
+    cout << "W<1, 2> : " << g.getEdge(1, 2) << endl;
+    //cout << "W<2, 1> : " << g.getEdge(2, 1) << endl; // 抛出异常
 
-    n = bt.find(5);
-    bt.insert(10, n);
+    cout << endl;
 
-    n = bt.find(3);
-    bt.insert(6, n);
-    bt.insert(7, n);
+    cout << "Adjacent(1) : " ;
+    SharedPointer<Array<int>> aj = g.getAdjacent(1);
 
-    SharedPointer< DynamicArray<int> > tr = bt.traversal(LevelOrder);
-
-    for(int i=0; i<tr->length(); i++)
+    for (int i=0; i<aj->length(); ++i)
     {
-        cout << (*tr)[i] << " ";
+        cout << (*aj)[i] << " ";
     }
-
     cout << endl;
 
     cout << endl;
 
-    BTreeNode<int>* head = bt.thread(LevelOrder);
+    cout << "delete edge:" << endl;
+    g.removeEdge(0, 1);
 
-    while( head != nullptr )
-    {
-        cout << head->value << " ";
-        head = head->right;
-    }
+    cout << "eCount : " << g.eCount() << endl;
+
+    g.setVertex(0, 100);
+
+    cout << "V(0) : " << g.getVertex(0) << endl;
+
+    //cout << "W(0, 1) : " << g.getEdge(0, 1) << endl; // 抛出异常
 
     return 0;
 }

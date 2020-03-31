@@ -27,10 +27,11 @@ public:
 
     virtual int TD(int i)
     {
-        OD(i) + ID(i);
+        return OD(i) + ID(i);
     }
 };
 
 }
 
 #endif // GRAPH_H
+
