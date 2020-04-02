@@ -5,6 +5,7 @@
 #include "SharedPointer.h"
 #include "DynamicArray.h"
 #include "LinkQueue.h"
+#include "LinkStack.h"
 
 namespace DTLib
 {
@@ -89,6 +90,58 @@ public:
                         q.add((*aj)[i]);
                     }
 
+                    r.add(v);
+
+                    visited[v] = true;
+                }
+            }
+
+            ret = toArray(r);
+        }
+        else
+        {
+            THROW_EXCEPTION(InvalidParameterException, "Parameter i is invalid ...");
+        }
+
+        return ret;
+    }
+
+    SharedPointer<Array<int>> DFS(int i)
+    {
+        DynamicArray<int> *ret = nullptr;
+
+        if( (0 <= i) && (i < vCount()) )
+        {
+            LinkStack<int> s;
+            LinkQueue<int> r;
+            DynamicArray<bool> visited(vCount());
+
+            for(int j=0; j<visited.length(); ++j)
+            {
+                visited[j] = false;
+            }
+
+            s.push(i);
+
+            while( s.size() > 0 )
+            {
+                int v = s.top();
+
+                s.pop();
+
+                if( !visited[v] )
+                {
+                    SharedPointer<Array<int>> aj = getAdjacent(v);
+#if 0
+                    for(int j=aj->length()-1; j>=0; --j)
+                    {
+                        s.push((*aj)[j]);
+                    }
+#endif
+                    for(int j=0; j < aj->length(); ++j)
+                    {
+                        s.push((*aj)[j]);
+                    }
                     r.add(v);
 
                     visited[v] = true;
