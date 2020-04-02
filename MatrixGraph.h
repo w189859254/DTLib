@@ -263,6 +263,11 @@ public:
         return ret;
     }
 
+    bool isAdjacent(int i, int j) override
+    {
+        return (0 <= i) && (i < vCount()) && (0 <= j) && (j < vCount()) && (m_edges[i][j] != nullptr);
+    }
+
     ~MatrixGraph()
     {
         for (int i=0; i<vCount(); ++i)

@@ -314,6 +314,11 @@ public:
         return ret;
     }
 
+    bool isAdjacent(int i, int j) override
+    {
+        return (0 <= i) && (i < vCount()) && (0 <= j) && (j < vCount()) && (m_list.get(i)->edge.find(Edge<E>(i, j)) >=0);
+    }
+
     ~ListGraph()
     {
         while( m_list.length() > 0 )    // 不删除 edge么？成员变量靠系统调用析构函数释放.

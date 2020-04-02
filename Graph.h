@@ -44,6 +44,7 @@ public:
     virtual bool getVertex(int i, V &value) = 0;
     virtual bool setVertex(int i, const V &value) = 0;
     virtual SharedPointer<Array<int>> getAdjacent(int i) = 0;
+    virtual bool isAdjacent(int i, int j) = 0;
     virtual E getEdge(int i, int j) = 0;
     virtual bool getEdge(int i, int j, E &value) = 0;
     virtual bool setEdge(int i, int j, const E &value) = 0;
@@ -56,6 +57,24 @@ public:
     virtual int TD(int i)
     {
         return OD(i) + ID(i);
+    }
+
+    bool asUndirected()
+    {
+        bool ret = true;
+
+        for(int i=0; i<vCount() && ret; ++i)
+        {
+            for(int j=0; j<vCount() && ret; ++j)
+            {
+                if( isAdjacent(i, j) )
+                {
+                    ret = isAdjacent(j, i) && (getEdge(i, j) == getEdge(j, i));
+                }
+            }
+        }
+
+        return ret;
     }
 
     SharedPointer<Array<int>> BFS(int i)
@@ -157,6 +176,89 @@ public:
 
         return ret;
     }
+
+    // LIMIT：理论上的最大权值
+    SharedPointer<Array<Edge<E>>> prim(const E &LIMIT, bool MINIMUM = true)
+    {
+        LinkQueue<Edge<E>> ret;
+
+        if( asUndirected() )
+        {
+            DynamicArray<int> adjVex(vCount());
+            DynamicArray<bool> mark(vCount());
+            DynamicArray<E> cost(vCount());
+            SharedPointer<Array<int>> aj = nullptr; // 邻接矩阵数组
+            bool end = false;
+            int v = 0;
+
+            for(int i=0; i<vCount(); ++i)
+            {
+                adjVex[i] = -1;
+                mark[i] = false;
+                cost[i] = LIMIT;
+            }
+
+            mark[v] = true;
+
+            aj = getAdjacent(v);
+
+            for(int i=0; i<aj->length(); ++i)
+            {
+                cost[(*aj)[i]] = getEdge(v, (*aj)[i]);
+                adjVex[(*aj)[i]] = v;
+            }
+
+            for(int i=0; i<vCount() && !end; ++i)
+            {
+                E m = LIMIT;
+                int k = -1;
+
+                for(int j=0; j<vCount(); ++j)
+                {
+                    if( !mark[j] && (MINIMUM ? (m > cost[j]) : (m < cost[j])) )
+                    {
+                        m = cost[j];
+                        k = j;
+                    }
+                }
+
+                end = (k == -1);
+
+                if( !end )
+                {
+                    ret.add(Edge<E>(adjVex[k],k, getEdge(adjVex[k],k)));
+
+                    mark[k] = true;
+
+                    aj = getAdjacent(k);
+
+                    for(int j=0; j<aj->length(); ++j)
+                    {
+                        if( !mark[(*aj)[j]] && (MINIMUM ?
+                                                (getEdge(k, (*aj)[j]) < cost[(*aj)[j]]) :
+                                                (getEdge(k, (*aj)[j]) > cost[(*aj)[j]])) )
+                        {
+                            cost[(*aj)[j]] = getEdge(k, (*aj)[j]);
+
+                            adjVex[(*aj)[j]] = k;
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            THROW_EXCEPTION(InvalidOperationException, "Prim operator is for undirected grap only ...");
+        }
+
+        if( ret.length() != (vCount() - 1) )
+        {
+            THROW_EXCEPTION(InvalidOperationException, "No enough edge for prim operation ...");
+        }
+
+        return toArray(ret);
+    }
+
 
 protected:
     template <typename T>
