@@ -304,6 +304,86 @@ public:
         return toArray(ret);
     }
 
+    SharedPointer<Array<int>> dijkstra(int i, int j, const E &LIMIT)
+    {
+        LinkQueue<int> ret;
+
+        if( (0 <= i) && (i < vCount()) && (0 <= j) && (j < vCount()) )
+        {
+            DynamicArray<E> dist(vCount());
+            DynamicArray<int> path(vCount());
+            DynamicArray<bool> mark(vCount());
+
+            for(int k=0; k<vCount(); ++k)
+            {
+                mark[k] = false;
+                path[k] = -1;
+
+                dist[k] = isAdjacent(i, k) ? (path[k]=i, getEdge(i, k)) : LIMIT;
+            }
+
+            mark[i] = true;
+
+            for(int k=0; k<vCount(); ++k)
+            {
+                E m = LIMIT;
+                int u = -1;
+
+                for(int w=0; w<vCount(); ++w)
+                {
+                    if( !mark[w] && dist[w] < m )
+                    {
+                        m = dist[w];
+                        u = w;
+                    }
+                }
+
+                if( u == -1 )   // 没有最小值，如：没有边.
+                {
+                    break;
+                }
+
+                mark[u] = true;
+
+                for(int w=0; w<vCount(); ++w)
+                {
+                    if( !mark[w] && isAdjacent(u, w) && (dist[u] + getEdge(u, w) < dist[w]) )
+                    {
+                        dist[w] = dist[u] + getEdge(u, w);
+                        path[w] = u;
+                    }
+                }
+            }
+
+            LinkStack<int> s;   // path 逆序保存，所以需要栈中转.
+
+            s.push(j);
+
+            for(int k=path[j]; k!=-1; k=path[k])
+            {
+                s.push(k);
+            }
+
+            while( s.size() > 0 )
+            {
+                ret.add(s.top());
+
+                s.pop();
+            }
+        }
+        else
+        {
+            THROW_EXCEPTION(InvalidOperationException, "Parameter <i, j> is invalid ...");
+        }
+
+        if( ret.length() < 2 )  // 起点与终点至少两个点.
+        {
+            THROW_EXCEPTION(ArithmeticException, "This is no path from i to j ...");
+        }
+
+        return toArray(ret);
+    }
+
 protected:
     template <typename T>
     DynamicArray<T>* toArray(LinkQueue<T> &queue)
