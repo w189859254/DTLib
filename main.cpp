@@ -87,7 +87,7 @@ void func1()
 
     Graph<int, int>& g = GraphEasy<int, int>();
 
-    SharedPointer< Array< Edge<int> > > sa = g.prim(65535);
+    SharedPointer< Array< Edge<int> > > sa = g.kruskal();
 
     int w = 0;
 
@@ -107,7 +107,7 @@ void func2()
 
     Graph<int, int>& g = GraphComplex<int, int>();
 
-    SharedPointer< Array< Edge<int> > > sa = g.prim(65535);
+    SharedPointer< Array< Edge<int> > > sa = g.kruskal();
 
     int w = 0;
 
@@ -127,7 +127,7 @@ void func3()
 
     Graph<int, int>& g = GraphComplex<int, int>();
 
-    SharedPointer< Array< Edge<int> > > sa = g.prim(0, false);
+    SharedPointer< Array< Edge<int> > > sa = g.kruskal(false);
 
     int w = 0;
 

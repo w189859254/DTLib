@@ -6,6 +6,7 @@
 #include "DynamicArray.h"
 #include "LinkQueue.h"
 #include "LinkStack.h"
+#include "Sort.h"
 
 namespace DTLib
 {
@@ -33,6 +34,16 @@ struct Edge : public Object
     bool operator != (const Edge &obj)
     {
         return !(*this == obj);
+    }
+
+    bool operator < (const Edge &obj)
+    {
+        return (data < obj.data);
+    }
+
+    bool operator > (const Edge &obj)
+    {
+        return (data > obj.data);
     }
 };
 
@@ -259,6 +270,39 @@ public:
         return toArray(ret);
     }
 
+    SharedPointer<Array<Edge<E>>> kruskal( const bool MINIMUM = true)
+    {
+        LinkQueue<Edge<E>> ret;
+        DynamicArray<int> p(vCount());
+        SharedPointer<Array<Edge<E>>> edges = getUndirectedEdges();
+
+        for(int i=0; i<p.length(); ++i)
+        {
+            p[i] = -1;
+        }
+
+        Sort::Shell(*edges, MINIMUM);
+
+        for(int i=0; (i<edges->length()) && (ret.length() < (vCount()-1)); ++i)
+        {
+            int b = find(p, (*edges)[i].b);
+            int e = find(p, (*edges)[i].e);
+
+            if( b != e )
+            {
+                p[e] = b;
+
+                ret.add((*edges)[i]);
+            }
+        }
+
+        if( ret.length() != vCount() - 1 )
+        {
+            THROW_EXCEPTION(InvalidOperationException, "No enough edges for Kruskal operation ...");
+        }
+
+        return toArray(ret);
+    }
 
 protected:
     template <typename T>
@@ -276,6 +320,45 @@ protected:
         else
         {
             THROW_EXCEPTION(NoEnoughMemoryException, "No memory to create ret obj ...");
+        }
+
+        return ret;
+    }
+
+    int find(Array<int> &p, int v)
+    {
+        while( p[v] != -1 )
+        {
+            v = p[v];
+        }
+
+        return v;
+    }
+
+    SharedPointer<Array<Edge<E>>> getUndirectedEdges()
+    {
+        DynamicArray<Edge<E>> *ret = nullptr;
+
+        if( asUndirected() )
+        {
+            LinkQueue<Edge<E>> queue;
+
+            for(int i=0; i<vCount(); ++i)
+            {
+                for(int j=0; j<vCount(); ++j)
+                {
+                    if( isAdjacent(i, j) )
+                    {
+                        queue.add(Edge<E>(i, j, getEdge(i, j)));
+                    }
+                }
+            }
+
+            ret = toArray(queue);
+        }
+        else
+        {
+            THROW_EXCEPTION(InvalidOperationException, "This function is for undirected graph only ...");
         }
 
         return ret;
