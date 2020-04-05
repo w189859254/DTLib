@@ -384,6 +384,68 @@ public:
         return toArray(ret);
     }
 
+    SharedPointer<Array<int>> floyd(int x, int y, const E &LIMIT)
+    {
+        LinkQueue<int> ret;
+
+        if( (0 <= x) && (x < vCount()) && (0 <= y) && (y < vCount()) )
+        {
+            DynamicArray< DynamicArray<E> > dist(vCount());
+            DynamicArray<DynamicArray<int>> path(vCount());
+
+            for(int k=0; k<vCount(); ++k)
+            {
+                dist[k].resize(vCount());
+                path[k].resize(vCount());
+            }
+
+            for(int i=0; i<vCount(); ++i)
+            {
+                for(int j=0; j<vCount(); ++j)
+                {
+                    dist[i][j] = isAdjacent(i, j) ? (path[i][j] = j, getEdge(i, j)) : LIMIT;
+                }
+            }
+
+            for(int k=0; k<vCount(); ++k)
+            {
+                for(int i=0; i<vCount(); ++i)
+                {
+                    for(int j=0; j<vCount(); ++j)
+                    {
+                        if(dist[i][j] > (dist[i][k] + dist[k][j]))
+                        {
+                            dist[i][j] = dist[i][k] + dist[k][j];
+                            path[i][j] = path[i][k];
+                        }
+                    }
+                }
+            }
+
+            while( (x != -1) && (x != y) )
+            {
+                ret.add(x);
+                x = path[x][y];
+            }
+
+            if( x != -1 )
+            {
+                ret.add(x);
+            }
+        }
+        else
+        {
+            THROW_EXCEPTION(InvalidParameterException, "Parameter <x, y> is invalid ...");
+        }
+
+        if( ret.length() < 2 )
+        {
+            THROW_EXCEPTION(ArithmeticException, "This is no path from x to y ...");
+        }
+
+        return toArray(ret);
+    }
+
 protected:
     template <typename T>
     DynamicArray<T>* toArray(LinkQueue<T> &queue)

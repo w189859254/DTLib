@@ -1,4 +1,4 @@
-#ifndef DYNAMICARRAY_H
+﻿#ifndef DYNAMICARRAY_H
 #define DYNAMICARRAY_H
 
 #include "Array.h"
@@ -16,7 +16,7 @@ protected:
     {
         T* ret = new T[newlen];
 
-        if(ret != NULL)
+        if(ret != nullptr)
         {
             int size = (len < newlen) ? len : newlen;
 
@@ -31,7 +31,7 @@ protected:
 
     void update(T* array, int length)
     {
-        if(array != NULL)
+        if(array != nullptr)
         {
             T* tmp = this->m_array;
 
@@ -48,7 +48,7 @@ protected:
 
     void init(T* array, int length)
     {
-        if(array != NULL)
+        if( array != nullptr )
         {
             this->m_array = array;
             this->m_length = length;
@@ -61,7 +61,7 @@ protected:
 
 public:
 
-    DynamicArray(int length)
+    DynamicArray(int length = 0)
     {
         init(new T[length], length);
     }
